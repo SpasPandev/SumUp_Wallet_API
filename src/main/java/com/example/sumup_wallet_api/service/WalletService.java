@@ -2,6 +2,7 @@ package com.example.sumup_wallet_api.service;
 
 import com.example.sumup_wallet_api.exception.WalletNotFoundException;
 import com.example.sumup_wallet_api.model.dto.CreateWalletDto;
+import com.example.sumup_wallet_api.model.dto.TransactionDto;
 import com.example.sumup_wallet_api.model.dto.WalletDto;
 import com.example.sumup_wallet_api.model.entity.User;
 import com.example.sumup_wallet_api.model.entity.Wallet;
@@ -11,11 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class WalletService {
@@ -115,5 +116,34 @@ public class WalletService {
         return ResponseEntity.ok(Map.of(
                 "walletId", wallet.getId(),
                 "balance", wallet.getBalance()));
+    }
+
+    @Transactional
+    public ResponseEntity<?> deposit(Long walletId, TransactionDto transactionDto) {
+
+        if (transactionDto.getAmount() == null || transactionDto.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Deposit amount must be greater than zero."));
+        }
+
+        User currentUser = findCurrentUser();
+
+        Wallet wallet = walletRepository.findById(walletId).orElseThrow(WalletNotFoundException::new);
+
+        if (!wallet.getUser().equals(currentUser)) {
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "You do not have permission to access this wallet."));
+        }
+
+        wallet.setBalance(wallet.getBalance().add(transactionDto.getAmount()));
+
+        walletRepository.save(wallet);
+
+        return ResponseEntity.ok(Map.of(
+                "walletId", walletId,
+                "newBalance", wallet.getBalance(),
+                "message", "Deposit successful"
+        ));
     }
 }

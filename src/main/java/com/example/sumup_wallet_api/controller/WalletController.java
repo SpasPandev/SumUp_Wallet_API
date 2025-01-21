@@ -1,6 +1,7 @@
 package com.example.sumup_wallet_api.controller;
 
 import com.example.sumup_wallet_api.model.dto.CreateWalletDto;
+import com.example.sumup_wallet_api.model.dto.TransactionDto;
 import com.example.sumup_wallet_api.service.WalletService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,12 @@ public class WalletController {
     public ResponseEntity<?> viewBalance(@PathVariable Long id) {
 
         return walletService.viewBalance(id);
+    }
+
+    @PostMapping("/{id}/deposit")
+    public ResponseEntity<?> deposit(@PathVariable Long id, @RequestBody TransactionDto transactionDto) {
+
+        return walletService.deposit(id, transactionDto);
     }
 
 }
