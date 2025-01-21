@@ -1,5 +1,6 @@
 package com.example.sumup_wallet_api.service;
 
+import com.example.sumup_wallet_api.exception.WalletNotFoundException;
 import com.example.sumup_wallet_api.model.dto.CreateWalletDto;
 import com.example.sumup_wallet_api.model.dto.WalletDto;
 import com.example.sumup_wallet_api.model.entity.User;
@@ -80,5 +81,20 @@ public class WalletService {
         String currentUserUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return userService.findUserByUsername(currentUserUsername);
+    }
+
+    public ResponseEntity<?> getWallet(Long id) {
+
+        User currentUser = findCurrentUser();
+
+        Wallet wallet = walletRepository.findById(id).orElseThrow(WalletNotFoundException::new);
+
+        if (!wallet.getUser().equals(currentUser)) {
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You do not have permission to access this wallet.");
+        }
+
+        return ResponseEntity.ok(modelMapper.map(wallet, WalletDto.class));
     }
 }

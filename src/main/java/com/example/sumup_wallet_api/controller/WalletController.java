@@ -28,4 +28,10 @@ public class WalletController {
         return walletService.getAllWallets();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getWallet(@PathVariable Long id) {
+
+        return walletService.getWallet(id);
+    }
+
 }
