@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -35,7 +36,7 @@ public class AuthService {
 
         if (userRepository.existsByUsername(registerRequestDto.getUsername())) {
 
-            return new ResponseEntity<>("Username already exists. Please choose a different one.",
+            return new ResponseEntity<>(Map.of("message", "Username already exists. Please choose a different one."),
                     HttpStatus.CONFLICT);
         }
 
@@ -48,7 +49,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return new ResponseEntity<>("Register Successful", HttpStatus.CREATED);
+        return new ResponseEntity<>(Map.of("message", "Register Successful"), HttpStatus.CREATED);
     }
 
     public ResponseEntity<?> loginUser(AuthRequestDto authRequestDto) {
@@ -59,7 +60,7 @@ public class AuthService {
                             authRequestDto.getPassword()));
         }
         catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid credentials"));
         }
 
         User user = null;
@@ -68,7 +69,7 @@ public class AuthService {
                     -> new UserWithUsernameNotFoundException(authRequestDto.getUsername()));
         }
         catch (UserWithUsernameNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
         }
 
         String jwt = jwtService.generateToken(user.getUsername());

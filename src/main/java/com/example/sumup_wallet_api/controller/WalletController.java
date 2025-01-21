@@ -34,4 +34,10 @@ public class WalletController {
         return walletService.getWallet(id);
     }
 
+    @GetMapping("/{id}/balance")
+    public ResponseEntity<?> viewBalance(@PathVariable Long id) {
+
+        return walletService.viewBalance(id);
+    }
+
 }

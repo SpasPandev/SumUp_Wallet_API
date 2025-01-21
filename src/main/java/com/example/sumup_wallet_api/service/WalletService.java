@@ -40,7 +40,9 @@ public class WalletService {
 
         if (walletExists) {
 
-            return new ResponseEntity<>("Wallet with this name already exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    Map.of("message", "Wallet with this name already exists"),
+                    HttpStatus.BAD_REQUEST);
         }
 
         Wallet wallet = Wallet.builder()
@@ -70,7 +72,7 @@ public class WalletService {
                 .toList();
 
         if (wallets.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No wallets found for the user");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "No wallets found for the user"));
         }
 
         return ResponseEntity.ok(wallets);
@@ -92,9 +94,26 @@ public class WalletService {
         if (!wallet.getUser().equals(currentUser)) {
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You do not have permission to access this wallet.");
+                    .body(Map.of("message", "You do not have permission to access this wallet."));
         }
 
         return ResponseEntity.ok(modelMapper.map(wallet, WalletDto.class));
+    }
+
+    public ResponseEntity<?> viewBalance(Long id) {
+
+        User currentUser = findCurrentUser();
+
+        Wallet wallet = walletRepository.findById(id).orElseThrow(WalletNotFoundException::new);
+
+        if (!wallet.getUser().equals(currentUser)) {
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "You do not have permission to access this wallet."));
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "walletId", wallet.getId(),
+                "balance", wallet.getBalance()));
     }
 }
