@@ -146,4 +146,39 @@ public class WalletService {
                 "message", "Deposit successful"
         ));
     }
+
+    @Transactional
+    public ResponseEntity<?> withdraw(Long id, TransactionDto transactionDto) {
+
+        if (transactionDto.getAmount() == null || transactionDto.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Withdrawal amount must be greater than zero."));
+        }
+
+        User currentUser = findCurrentUser();
+
+        Wallet wallet = walletRepository.findById(id).orElseThrow(WalletNotFoundException::new);
+
+        if (!wallet.getUser().equals(currentUser)) {
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "You do not have permission to access this wallet."));
+        }
+
+        BigDecimal withdrawalAmount = transactionDto.getAmount();
+
+        if (wallet.getBalance().compareTo(withdrawalAmount) < 0) {
+
+            return ResponseEntity.badRequest().body(Map.of("message", "Insufficient balance to withdraw"));
+        }
+
+        wallet.setBalance(wallet.getBalance().subtract(withdrawalAmount));
+        walletRepository.save(wallet);
+
+        return ResponseEntity.ok(Map.of(
+                "walletId", id,
+                "withdrawnAmount", withdrawalAmount,
+                "newBalance", wallet.getBalance(),
+                "message", "Withdrawal successful"));
+    }
 }

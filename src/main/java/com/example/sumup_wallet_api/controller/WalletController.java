@@ -47,4 +47,10 @@ public class WalletController {
         return walletService.deposit(id, transactionDto);
     }
 
+    @PostMapping("/{id}/withdraw")
+    public ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody TransactionDto transactionDto) {
+
+        return walletService.withdraw(id, transactionDto);
+    }
+
 }
