@@ -1,5 +1,6 @@
 package com.example.sumup_wallet_api.controller;
 
+import com.example.sumup_wallet_api.model.dto.AuthRequestDto;
 import com.example.sumup_wallet_api.model.dto.RegisterRequestDto;
 import com.example.sumup_wallet_api.service.AuthService;
 import jakarta.validation.Valid;
@@ -24,14 +25,12 @@ public class AuthController {
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
 
         return authService.registerUser(registerRequestDto);
-
-//        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-//        Wallet wallet = new Wallet();
-//        wallet.setBalance(0.0);
-//        wallet.setUser(user);
-//        user.setWallet(wallet);
-//        userRepository.save(user);
-
-//        return ResponseEntity.ok("User registered successfully");
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody AuthRequestDto authRequestDto) {
+
+        return authService.loginUser(authRequestDto);
+    }
+
 }
