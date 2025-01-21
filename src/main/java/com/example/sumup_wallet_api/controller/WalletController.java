@@ -17,8 +17,15 @@ public class WalletController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createWallet(@Valid @RequestBody CreateWalletDto createWalletDto){
+    public ResponseEntity<?> createWallet(@Valid @RequestBody CreateWalletDto createWalletDto) {
 
         return walletService.createWallet(createWalletDto);
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllWallets() {
+
+        return walletService.getAllWallets();
+    }
+
 }

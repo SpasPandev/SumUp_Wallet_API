@@ -12,7 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class WalletService {
@@ -55,5 +57,28 @@ public class WalletService {
         );
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<?> getAllWallets() {
+
+        User currentUser = findCurrentUser();
+
+        List<WalletDto> wallets = walletRepository.findAllByUser(currentUser)
+                .stream()
+                .map(wallet -> modelMapper.map(wallet, WalletDto.class))
+                .toList();
+
+        if (wallets.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No wallets found for the user");
+        }
+
+        return ResponseEntity.ok(wallets);
+    }
+
+    private User findCurrentUser() {
+
+        String currentUserUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return userService.findUserByUsername(currentUserUsername);
     }
 }
