@@ -1,5 +1,9 @@
 package com.example.sumup_wallet_api.config;
 
+import com.example.sumup_wallet_api.model.dto.UserDto;
+import com.example.sumup_wallet_api.model.dto.WalletDto;
+import com.example.sumup_wallet_api.model.entity.User;
+import com.example.sumup_wallet_api.model.entity.Wallet;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +16,15 @@ public class ApplicationConfig {
     @Bean
     public ModelMapper modelMapper(){
 
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper
+                .typeMap(Wallet.class, WalletDto.class)
+                .addMappings(mapper ->
+                        mapper.map(Wallet::getUser, WalletDto::setUserDto))
+        ;
+
+        return modelMapper;
     }
 
     @Bean

@@ -18,6 +18,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Wallet extends BaseEntity {
 
+    @Column(nullable = false, unique = true)
+    private String name;
+
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private BigDecimal balance;
 
