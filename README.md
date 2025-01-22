@@ -1,7 +1,7 @@
 # SumUp_Wallet_API
 
 ## Overview
-SumUp Wallet API is a Spring Boot application that provides functionalities for user registration, authentication, and wallet management. It enables users to create wallets, view balances, and perform transactions such as deposits and withdrawals. The project uses JWT for secure authentication.
+SumUp Wallet API is a RESTful Spring Boot application that provides functionalities for user registration, authentication, and wallet management. It enables users to create wallets, view balances, and perform transactions such as deposits and withdrawals. The project uses JWT for secure authentication and follows REST principles for API design.
 
 ### Technologies Used
 - Java 17
@@ -84,7 +84,7 @@ SumUp Wallet API is a Spring Boot application that provides functionalities for 
   ```json
   {
     "username": "testuser",
-    "password": "password",
+    "password": "123321",
     "firstName": "Test",
     "lastName": "User"
   }
@@ -109,31 +109,7 @@ SumUp Wallet API is a Spring Boot application that provides functionalities for 
   ```json
   {
     "username": "testuser",
-    "password": "password"
-  }
-  ```
-- **Possible Responses**:
-    - Success (200 OK):
-      ```json
-      {
-        "jwt": "<JWT-TOKEN>"
-      }
-      ```
-    - Unauthorized (401 Unauthorized):
-      ```json
-      {
-        "message": "Invalid credentials"
-      }
-      ```
-
-
-#### 2. **User Login**
-- **Endpoint**: `POST /api/v1/auth/login`
-- **Request Body**:
-  ```json
-  {
-    "username": "testuser",
-    "password": "password"
+    "password": "123321"
   }
   ```
 - **Possible Responses**:
