@@ -355,3 +355,8 @@ SumUp Wallet API is a Spring Boot application that provides functionalities for 
     - When the application starts, it deletes existing tables and creates new ones.
    
     - The tables are initialized with default data from the `data.sql` file located in the `src/main/resources` directory.
+
+3. **Testing Auto-Generated Users**
+
+    - To test the auto-generated users, use the default password: `123321`.
+
